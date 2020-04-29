@@ -54,7 +54,7 @@ namespace NetSurface.AspNetCore.Host
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                //endpoints.MapHub<DockerIntegrationHub>("/docker-integration-hub");
+                //endpoints.MapHub<ProvisioningHub>("/provisioning-hub");
                 endpoints.MapFallbackToFile("index.html");
             });
         }

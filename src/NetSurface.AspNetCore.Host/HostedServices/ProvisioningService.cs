@@ -10,6 +10,10 @@ namespace NetSurface.AspNetCore.Host.HostedServices
 
         private readonly ILogger<ProvisioningService> _logger = null;
 
+        public ProvisioningService(ILogger<ProvisioningService> logger) {
+            _logger = logger;
+        }
+
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             // Loop is here to wait until the server is running
