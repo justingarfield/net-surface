@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using NetSurface.AspNetCore.Host.Diagnostics;
+using Serilog;
 using System.Linq;
 
 namespace NetSurface.AspNetCore.Host
@@ -31,8 +34,10 @@ namespace NetSurface.AspNetCore.Host
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddSerilog();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -47,6 +52,9 @@ namespace NetSurface.AspNetCore.Host
 
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
+
+            app.UseMiddleware<SerilogMiddleware>();
+
             app.UseStaticFiles();
 
             app.UseRouting();

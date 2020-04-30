@@ -1,7 +1,10 @@
+using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetSurface.AspNetCore.Host.HostedServices;
+using Serilog;
+using Serilog.Events;
 
 namespace NetSurface.AspNetCore.Host
 {
@@ -9,9 +12,23 @@ namespace NetSurface.AspNetCore.Host
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args)
-                .Build()
-                .Run();
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Seq("http://localhost:5341")
+                .CreateLogger();
+
+            try {
+                CreateHostBuilder(args)
+                    .Build()
+                    .Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -22,8 +39,8 @@ namespace NetSurface.AspNetCore.Host
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<ProvisioningService>();
-                });
-                
+                    services.AddHostedService<NetSurfaceEngine>();
+                })
+                .UseSerilog();
     }
 }
