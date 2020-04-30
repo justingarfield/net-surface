@@ -1,10 +1,9 @@
-using System;
 using System.Threading.Tasks;
 
 namespace NetSurface.AspNetCore.SignalR.Abstractions
 {
     public interface IProvisioningHub {
-        Task BeginPollingForDocker();
-        Task ReceiveStatusMessage(DateTime dateTime, string message);
+        Task ToggleUserProviders(string[] providerNames);
+        Task ToggleUserCapabilities(string[] capabilityNames);
     }
 }

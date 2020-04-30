@@ -3,15 +3,20 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using System;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace NetSurface.AspNetCore.Host.HostedServices
 {
     //
     // Summary:
-    //     Responsible for...
+    //     
     public partial class NetSurfaceEngine : IHostedService {
 
         private const int ENGINE_TICK_RATE_IN_SECONDS = 3;
+
+        private const string PROVISIONING_HUB_URL = "https://localhost:5001/provisioning-hub";
+
+        private HubConnection _provisioningHubConnection;
 
         private readonly ILogger<NetSurfaceEngine> _logger = null;
 
@@ -24,6 +29,8 @@ namespace NetSurface.AspNetCore.Host.HostedServices
         ///
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            ConfigureProvisioningHub();
+
             _logger.LogInformation("Entering Engine Processing Loop");
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -50,5 +57,29 @@ namespace NetSurface.AspNetCore.Host.HostedServices
         }
 
         #endregion IHostedService Implementation
+
+        #region Private Methods
+
+        private void ConfigureProvisioningHub() {
+
+            _provisioningHubConnection = new HubConnectionBuilder()
+                                                .WithUrl(PROVISIONING_HUB_URL)
+                                                .Build();
+
+            _provisioningHubConnection.On("ToggleUserProviders", ToggleUserProviders);
+            _provisioningHubConnection.On("ToggleUserCapabilities", ToggleUserCapabilities);
+        }
+
+        private Task ToggleUserProviders() {
+            _logger.LogInformation("ToggleUserProviders");
+            return Task.CompletedTask;
+        }
+
+        private Task ToggleUserCapabilities() {
+            _logger.LogInformation("ToggleUserCapabilities");
+            return Task.CompletedTask;
+        }
+
+        #endregion Private Methods
     }
 }

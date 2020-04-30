@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NetSurface.AspNetCore.Host.Diagnostics;
+using NetSurface.AspNetCore.SignalR.Hubs;
 using Serilog;
 using System.Linq;
 
@@ -62,7 +63,7 @@ namespace NetSurface.AspNetCore.Host
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                //endpoints.MapHub<ProvisioningHub>("/provisioning-hub");
+                endpoints.MapHub<ProvisioningHub>("/provisioning-hub");
                 endpoints.MapFallbackToFile("index.html");
             });
         }
